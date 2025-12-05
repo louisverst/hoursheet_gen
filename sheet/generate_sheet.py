@@ -2,6 +2,8 @@ from datetime import datetime
 
 from openpyxl import Workbook
 
+from cell import Cell
+
 def sheet(classes: list, start_date: str, end_date: str, file_location: str) -> None:
     """
     Generates the hour sheet file and saves it to a given file location.
@@ -25,6 +27,7 @@ def sheet(classes: list, start_date: str, end_date: str, file_location: str) -> 
     ws.title = "Hoursheet"
 
     add_header(ws)
+    add_dates(ws)
 
     wb.save(file_location)
 
@@ -44,6 +47,11 @@ def add_header(sheet, row_offset: int = 2, col_offset: int = 3, sessions: int = 
         sheet.cell(row=row_offset, column=col_offset + i*3 + 1).value = "Stop"
         sheet.cell(row=row_offset, column=col_offset + i*3 + 2).value = "Course"
 
+    
+
+
+def add_dates():
+    return
     
 
 

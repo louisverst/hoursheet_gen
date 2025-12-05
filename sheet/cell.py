@@ -1,3 +1,6 @@
+from helper.alphabet import next_letter
+from helper.alphabet import prev_letter
+
 class Cell:
     def __init__(self, cell: str):
         """
@@ -30,9 +33,27 @@ class Cell:
                 
     def __str__(self):
         return self.column + self.row
-    
-    def __call__(self):
-        return self.__str__()
+
+    @staticmethod
+    def get_column(n: int) -> str:
+        """
+        Converts a number to the textual column representation.
+
+        Spreadsheet columns are bounded by XFD, so the input is bounded by 16 384.
+        This constraint allows for O(1) computation.
+        
+        :param int n: Number of column < 16 384.
+        :return str: Textual representation.
+        """
+        if n < 1 or n > 16384:
+            raise ValueError(f"Invalid column index {n}")
+        
+        dummy = Cell("A1")
+        for _ in range(n):
+            dummy.right()
+
+        return dummy.column
+        
     
     def up(self):
         if self.row != "1":
@@ -42,11 +63,18 @@ class Cell:
 
     
     def right(self):
-        if self.column[-1] == "Z":
-            self.column = self.column[:-1] +  "A"
-            self.column += "A"
+        if self.column == len(self.column)*"Z":
+            self.column = (len(self.column)+1)*"A"
+
+        elif self.column[-1] == "Z":
+            i = len(self.column) - 2
+            while self.column[i] == "Z":
+                i -= 1
+
+            self.column = self.column[:i] + next_letter(self.column[i]) + (len(self.column) - i - 1) * "A"
+            
         else:
-            self.column = self.column[:-1] + chr(ord(self.column[-1]) + 1)     
+            self.column = self.column[:-1] + next_letter(self.column[-1])
 
         return self.__str__()   
 
@@ -55,14 +83,24 @@ class Cell:
         return self.__str__()
 
     def left(self):
-        if len(self.column) == 1 and self.column[0] == "A":
+        if self.column == "A":
             return self.__str__()
+        
+        if self.column == len(self.column)*"A":
+            self.column = (len(self.column) - 1)*"Z"
+
         elif self.column[-1] == "A":
-            self.column = self.column[:-2] + "Z"
+            i = len(self.column) - 2
+            while self.column[i] == "A":
+                i -= 1
+            
+            self.column = self.column[:i] + prev_letter(self.column[i]) + (len(self.column) - i - 1) * "Z"
+
         else:
-            self.column = self.column[:-1] + chr(ord(self.column[-1]) - 1)
+            self.column = self.column[:-1] + prev_letter(self.column[-1])
 
         return self.__str__()
+
         
 
 def test_cell():
