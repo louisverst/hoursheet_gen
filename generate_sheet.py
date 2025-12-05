@@ -17,11 +17,34 @@ def sheet(classes: list, start_date: str, end_date: str, file_location: str) -> 
 
     if end_date < start_date:
         raise ValueError("Start date is later than end date.")
+    
+    days = (end_date - start_date).days + 1
 
     wb = Workbook()
-    ws = wb.create_sheet("Hoursheet")
+    ws = wb.active
+    ws.title = "Hoursheet"
 
-    days = (end_date - start_date).days + 1
+    add_header(ws)
+
+    wb.save(file_location)
+
+
+def add_header(sheet, row_offset: int = 2, col_offset: int = 3, sessions: int = 6):
+    """
+    Adds the header to the sheet.
+
+    :param sheet: Sheet to which the header should be added.
+    :param int row_offset: Row offset where the header should start relative to the top left of the spreadsheet.
+    :param int col_offset: Column offset where the header should start relative to the top left of the spreadsheet.
+    :param int sessions: Amount of sessions blocks should be generated.
+    """
+
+    for i in range(sessions - 1):
+        sheet.cell(row=row_offset, column=col_offset + i*3).value = "Start"
+        sheet.cell(row=row_offset, column=col_offset + i*3 + 1).value = "Stop"
+        sheet.cell(row=row_offset, column=col_offset + i*3 + 2).value = "Course"
+
+    
 
 
 def format_date(date: str) -> str:
@@ -65,6 +88,9 @@ def test_format_date():
 
     print("\n" + 63*"=" + "\n\n")
 
+def test_sheet():
+    sheet(["Computer architecture", "Operating systems", "Computer networks"], "1-1-2000", "11-1-2000", "test.xlsx")
+
 if __name__ == "__main__":
     # test_format_date()
-    sheet([], "1-1-1970", "3-1-1970", "")
+    test_sheet()
