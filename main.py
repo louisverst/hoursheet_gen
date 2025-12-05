@@ -1,4 +1,4 @@
-from user_input import *
+from ui.user_input import *
 
 introduction()
 input()
