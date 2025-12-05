@@ -48,3 +48,9 @@ def next_letter(c: str) -> str:
 
 
     raise ValueError("Invalid input for next_letter()")
+
+def divmod_excel(n):
+    a, b = divmod(n, 26)
+    if b == 0:
+        return a - 1, b + 26
+    return a, b

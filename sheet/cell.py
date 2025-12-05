@@ -1,5 +1,6 @@
 from helper.alphabet import next_letter
 from helper.alphabet import prev_letter
+from helper.alphabet import divmod_excel
 
 class Cell:
     def __init__(self, cell: str):
@@ -39,20 +40,19 @@ class Cell:
         """
         Converts a number to the textual column representation.
 
-        Spreadsheet columns are bounded by XFD, so the input is bounded by 16 384.
-        This constraint allows for O(1) computation.
+        Source of calculation method:
+        https://stackoverflow.com/a/48984697
         
-        :param int n: Number of column < 16 384.
+        :param int n: Number of column..
         :return str: Textual representation.
         """
-        if n < 1 or n > 16384:
-            raise ValueError(f"Invalid column index {n}")
         
-        dummy = Cell("A1")
-        for _ in range(n):
-            dummy.right()
+        chars = []
+        while n > 0:
+            n, d = divmod_excel(n)
+            chars.append(chr(65 + d - 1))
 
-        return dummy.column
+        return ''.join(reversed(chars))
         
     
     def up(self):
@@ -72,7 +72,7 @@ class Cell:
                 i -= 1
 
             self.column = self.column[:i] + next_letter(self.column[i]) + (len(self.column) - i - 1) * "A"
-            
+
         else:
             self.column = self.column[:-1] + next_letter(self.column[-1])
 
@@ -158,3 +158,4 @@ def test_cell():
 
 if __name__ == "__main__":
     test_cell()
+    
