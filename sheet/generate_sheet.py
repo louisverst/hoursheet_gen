@@ -42,15 +42,28 @@ def add_header(sheet, row_offset: int = 2, col_offset: int = 3, sessions: int = 
     :param int sessions: Amount of sessions blocks should be generated.
     """
 
-    for i in range(sessions - 1):
-        sheet.cell(row=row_offset, column=col_offset + i*3).value = "Start"
-        sheet.cell(row=row_offset, column=col_offset + i*3 + 1).value = "Stop"
-        sheet.cell(row=row_offset, column=col_offset + i*3 + 2).value = "Course"
+    cell = Cell(Cell.get_column(col_offset) + str(row_offset))
 
+    for _ in range(sessions):
+        sheet[str(cell)] = "Start"
+        cell.right()
+        sheet[str(cell)] = "Stop"
+        cell.right()
+        sheet[str(cell)] = "Course"
+        cell.right()
+
+    sheet[str(cell)] = "Class hours"
+    cell.right()
+    sheet[str(cell)] = "Day total"
+    cell.right()
+    sheet[str(cell)] = "Week total"
+    cell.right()
+    sheet[str(cell)] = "Month total"
+    cell.right()
     
 
 
-def add_dates():
+def add_dates(sheet):
     return
     
 
