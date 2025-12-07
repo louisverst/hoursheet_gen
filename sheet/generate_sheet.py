@@ -1,4 +1,6 @@
 from datetime import datetime
+from datetime import timedelta
+from calendar import day_name
 
 from openpyxl import Workbook
 
@@ -27,18 +29,18 @@ def sheet(classes: list, start_date: str, end_date: str, file_location: str) -> 
     ws.title = "Hoursheet"
 
     add_header(ws)
-    add_dates(ws)
+    add_dates(ws, start_date, days)
 
-    wb.save(file_location)
+    wb.save(file_location, )
 
 
 def add_header(sheet, row_offset: int = 2, col_offset: int = 3, sessions: int = 6):
     """
     Adds the header to the sheet.
 
-    :param sheet: Sheet to which the header should be added.
-    :param int row_offset: Row offset where the header should start relative to the top left of the spreadsheet.
-    :param int col_offset: Column offset where the header should start relative to the top left of the spreadsheet.
+    :param sheet: Openpyxl sheet to which the header should be added.
+    :param int row_offset: Row where the header should start relative to the top left of the spreadsheet.
+    :param int col_offset: Column where the header should start relative to the top left of the spreadsheet.
     :param int sessions: Amount of sessions blocks should be generated.
     """
 
@@ -63,8 +65,27 @@ def add_header(sheet, row_offset: int = 2, col_offset: int = 3, sessions: int = 
     
 
 
-def add_dates(sheet):
-    return
+def add_dates(sheet, start_date: datetime, days: int, row_offset: int = 3, col_offset: int = 1):
+    """
+    Adds the days of the weeks and the dates to the hoursheet.
+
+    :param sheet: Openpyxl sheet to which the dates should be added.
+    :param datetime start_day: Python datetime object of the first day to be added.
+    :param int row_offset: Row where the dates should start relative to the top left of the spreadsheet.
+    :param int col_offset: Column where the dates should start relative to the top left of the spreadsheet.
+    :param int days: Number of days that should be added.
+    """
+
+    cell = Cell(Cell.get_column(col_offset) + str(row_offset))
+    day = start_date
+
+    for _ in range(days):
+        sheet[str(cell)] = day_name[day.weekday()]
+        cell.right()
+        sheet[str(cell)] = day.strftime("%d/%m/%Y")
+        cell.left()
+        cell.down()
+        day += timedelta(days=1)
     
 
 
